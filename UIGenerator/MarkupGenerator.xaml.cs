@@ -8,8 +8,10 @@ using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using UIGenerator;
 using Westwind.RazorHosting;
+using ZTn.Json.JsonTreeView;
 
 namespace DST.UIGenerator
 {
@@ -18,6 +20,11 @@ namespace DST.UIGenerator
     /// </summary>
     public partial class MarkupGenerator : System.Windows.Controls.UserControl
     {
+        #region >> Fields
+
+        private System.Timers.Timer jsonValidationTimer;
+
+        #endregion
         /// <summary>
         /// Cached instance of RazorHost
         /// </summary>
@@ -423,6 +430,78 @@ namespace DST.UIGenerator
                 {
                     txtGenerated.Text = txtGenerated.Text + cbxAPIs.SelectedItem.ToString() + "\r\n";
                 }
+            }
+        }
+
+        private void txtJsonValue_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            StartValidationTimer();
+        }
+
+        private void txtJsonValue_LostFocus(object sender, RoutedEventArgs e)
+        {
+            txtJsonValue.TextChanged -= txtJsonValue_TextChanged;
+        }
+
+        private void txtJsonValue_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtJsonValue.TextChanged += txtJsonValue_TextChanged;
+        }
+
+        private void SetJsonStatus(string text, bool isError)
+        {
+            //if (InvokeRequired)
+            //{
+            //    Invoke(new SetJsonStatusDelegate(SetActionStatus), text, isError);
+            //    return;
+            //}
+
+            txtJsonStatus.Text = text;
+            txtJsonStatus.Foreground = isError ? new SolidColorBrush(Colors.OrangeRed) : new SolidColorBrush(Colors.Black);
+        }
+
+        private void StartValidationTimer()
+        {
+            jsonValidationTimer?.Stop();
+
+            jsonValidationTimer = new System.Timers.Timer(250);
+
+            jsonValidationTimer.Elapsed += (o, args) =>
+            {
+                jsonValidationTimer.Stop();
+
+                jTokenTree.Invoke(new Action(JsonValidationTimerHandler));
+            };
+
+            jsonValidationTimer.Start();
+        }
+
+        private void JsonValidationTimerHandler()
+        {
+            try
+            {
+                jTokenTree.UpdateSelected(txtJsonValue.Text);
+
+                SetJsonStatus("Json format validated.", false);
+            }
+            catch (JsonReaderException exception)
+            {
+                SetJsonStatus(
+                    $"INVALID Json format at (line {exception.LineNumber}, position {exception.LinePosition})",
+                    true);
+            }
+            catch
+            {
+                SetJsonStatus("INVALID Json format", true);
+            }
+        }
+
+        private void jTokenTree_AfterSelect(object sender, AfterSelectEventArgs e)
+        {
+            // If jsonValueTextBox is focused then it triggers this event in the update process, so don't update it again ! (risk: infinite loop between events).
+            if(!txtJsonValue.IsFocused)
+            {
+                txtJsonValue.Text = e.GetJsonString();
             }
         }
     }

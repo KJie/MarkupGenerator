@@ -8,9 +8,10 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
              d:DesignHeight="663.66" d:DesignWidth="1004.708">
-    <Grid>
+    <Grid x:Name="gridMain">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
+            <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -30,14 +31,16 @@
         <Button x:Name="btnGo" Content="Go" HorizontalAlignment="Right" Margin="0,0,20,0" VerticalAlignment="Center" Width="37" Height="23" Click="btnGo_Click" Grid.Column="5"/>
         <Button x:Name="btnGenerate" Content="Generate" Margin="0" VerticalAlignment="Center" Width="75" Click="btnGenerate_Click" Height="23" Grid.Column="6" HorizontalAlignment="Center" Grid.ColumnSpan="3"/>
         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="API" VerticalAlignment="Center"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,2,0,0" TextWrapping="Wrap" Text="Schema(Json)" VerticalAlignment="Top" Grid.Row="1"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,2,0,0" TextWrapping="Wrap" Text="Generated html" VerticalAlignment="Top" Grid.Column="6" Grid.Row="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,2,0,0" TextWrapping="Wrap" Text="Schema(Json)" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="6"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,2,0,0" TextWrapping="Wrap" Text="Generated html" VerticalAlignment="Top" Grid.Column="6" Grid.Row="1" Grid.ColumnSpan="6"/>
         <Button x:Name="btnSave" Content="Save" Margin="0" VerticalAlignment="Center" Click="btnSave_Click" Height="23" Grid.Column="9" HorizontalAlignment="Center" Width="75" Grid.ColumnSpan="3"/>
         <TextBox x:Name="txtSchema" Margin="2,20,2,2" TextWrapping="Wrap" Text="{}{&#xA;    &quot;type&quot;: &quot;object&quot;,&#xA;    &quot;properties&quot;: {&#xA;        &quot;ProductBalances&quot;: {&#xA;            &quot;type&quot;: &quot;array&quot;,&#xA;            &quot;items&quot;: {&#xA;                &quot;type&quot;: &quot;object&quot;,&#xA;                &quot;properties&quot;: {&#xA;                    &quot;ProductID&quot;: {&#xA;                        &quot;type&quot;: &quot;string&quot;&#xA;                    },&#xA;                    &quot;ProductName&quot;: {&#xA;                        &quot;type&quot;: &quot;string&quot;&#xA;                    },&#xA;                    &quot;Balance&quot;: {&#xA;                        &quot;format&quot;: &quot;double&quot;,&#xA;                        &quot;type&quot;: &quot;number&quot;&#xA;                    }&#xA;                }&#xA;            }&#xA;        },&#xA;        &quot;Balance&quot;: {&#xA;            &quot;format&quot;: &quot;double&quot;,&#xA;            &quot;type&quot;: &quot;number&quot;&#xA;        },&#xA;        &quot;InvestmentCount&quot;: {&#xA;            &quot;format&quot;: &quot;int64&quot;,&#xA;            &quot;type&quot;: &quot;integer&quot;&#xA;        },&#xA;        &quot;PortfolioCount&quot;: {&#xA;            &quot;format&quot;: &quot;int64&quot;,&#xA;            &quot;type&quot;: &quot;integer&quot;&#xA;        }&#xA;    }&#xA;}" AcceptsReturn="True" Grid.Row="1" Grid.ColumnSpan="6" Visibility="Hidden"/>
-        <TextBox x:Name="txtGenerated" Margin="2,20,2,2" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="6"/>
-        <ComboBox x:Name="cbxAPIs" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="4" Width="380"/>
-        <WindowsFormsHost x:Name="wfh" Margin="2,20,2,2" Grid.Row="1" Grid.ColumnSpan="6">
-            <mcl:JTokenTreeUserControl x:Name="jTokenTree"/>
+        <TextBox x:Name="txtGenerated" Margin="1,20,2,2" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="6" Grid.RowSpan="2"/>
+        <ComboBox x:Name="cbxAPIs" Margin="0" VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="4" Height="23"/>
+        <WindowsFormsHost x:Name="wfh" Margin="2,20,1,0" Grid.Row="1" Grid.ColumnSpan="6">
+            <mcl:JTokenTreeUserControl x:Name="jTokenTree" AfterSelect="jTokenTree_AfterSelect"/>
         </WindowsFormsHost>
+        <TextBox x:Name="txtJsonValue" Grid.ColumnSpan="6" Margin="2,2,1,2" Grid.Row="2" TextWrapping="Wrap" LostFocus="txtJsonValue_LostFocus" GotFocus="txtJsonValue_GotFocus" AcceptsReturn="True"/>
+        <TextBlock x:Name="txtJsonStatus" HorizontalAlignment="Right" Margin="0,0,2,292" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Bottom" Grid.ColumnSpan="6"/>
     </Grid>
 </UserControl>
